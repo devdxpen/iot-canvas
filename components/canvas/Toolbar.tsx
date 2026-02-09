@@ -6,7 +6,7 @@ import {
   Square,
   Circle,
   Type,
-  Image,
+  Image as ImageIcon,
   Table,
   Minus,
   Triangle,
@@ -24,12 +24,11 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-  AlignStartVertical, // Top
-  AlignVerticalJustifyCenter, // Middle
-  AlignEndVertical, // Bottom
+  AlignStartVertical,
+  AlignVerticalJustifyCenter,
+  AlignEndVertical,
   StretchHorizontal,
   StretchVertical,
-  BoxSelect,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,7 +51,6 @@ interface ToolbarProps {
   setTemplateName: (name: string) => void;
   canUndo: boolean;
   canRedo: boolean;
-  // Alignment & Distribution
   onAlignLeft: () => void;
   onAlignCenter: () => void;
   onAlignRight: () => void;
@@ -61,7 +59,6 @@ interface ToolbarProps {
   onAlignBottom: () => void;
   onDistributeHorizontal: () => void;
   onDistributeVertical: () => void;
-  // Grid
   showGrid: boolean;
   setShowGrid: (show: boolean) => void;
   snapToGrid: boolean;
@@ -102,259 +99,206 @@ export function Toolbar({
   hasMultipleSelection,
 }: ToolbarProps) {
   const tools = [
-    { id: "select", icon: MousePointer2, label: "Select (Pan)" },
-    { id: "multi-select", icon: BoxSelect, label: "Multi Select" },
+    { id: "select", icon: MousePointer2, label: "Select" },
     { id: "rectangle", icon: Square, label: "Rectangle" },
     { id: "circle", icon: Circle, label: "Circle" },
     { id: "line", icon: Minus, label: "Line" },
     { id: "triangle", icon: Triangle, label: "Triangle" },
     { id: "text", icon: Type, label: "Text" },
-    { id: "image", icon: Image, label: "Image" },
-    { id: "table", icon: Table, label: "Table" },
+    { id: "image", icon: ImageIcon, label: "Image" },
   ];
 
   return (
-    <div className="bg-white border-b border-gray-200 p-2 flex items-center gap-2 flex-wrap h-14">
-      {/* Selection Tools */}
-      <div className="flex items-center gap-1 border-r pr-2 h-full">
-        {tools.map((tool) => (
+    <div className="bg-white border-b h-14 px-4 flex items-center justify-between shadow-sm z-10">
+      <div className="flex items-center gap-1 h-full py-2">
+        {/* Tools */}
+        <div className="flex items-center gap-0.5 border-r pr-2 mr-2">
+          {tools.map((tool) => (
+            <Button
+              key={tool.id}
+              variant={selectedTool === tool.id ? "secondary" : "ghost"}
+              size="icon"
+              className={cn(
+                "h-8 w-8",
+                selectedTool === tool.id && "bg-blue-100 text-blue-600",
+              )}
+              onClick={() => setSelectedTool(tool.id)}
+              title={tool.label}
+            >
+              <tool.icon size={16} />
+            </Button>
+          ))}
+        </div>
+
+        {/* View Controls */}
+        <div className="flex items-center gap-0.5 border-r pr-2 mr-2">
           <Button
-            key={tool.id}
-            variant="ghost"
-            size="sm"
-            className={cn(
-              "h-8 w-8 p-0",
-              selectedTool === tool.id && "bg-blue-100 text-blue-600",
-            )}
-            onClick={() => setSelectedTool(tool.id)}
-            title={tool.label}
+            variant={showGrid ? "secondary" : "ghost"}
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setShowGrid(!showGrid)}
+            title="Toggle Grid"
           >
-            <tool.icon size={16} />
+            <Grid size={16} />
           </Button>
-        ))}
-      </div>
+          <Button
+            variant={snapToGrid ? "secondary" : "ghost"}
+            size="icon"
+            className={cn("h-8 w-8", snapToGrid && "text-blue-600")}
+            onClick={() => setSnapToGrid(!snapToGrid)}
+            title="Snap to Grid"
+          >
+            <Settings size={16} />
+          </Button>
+        </div>
 
-      {/* Grid Controls */}
-      <div className="flex items-center gap-1 border-r pr-2 h-full">
-        <Button
-          variant="ghost"
-          size="sm"
-          className={cn("h-8 w-8 p-0", showGrid && "bg-gray-100 text-gray-900")}
-          onClick={() => setShowGrid(!showGrid)}
-          title={showGrid ? "Hide Grid" : "Show Grid"}
-        >
-          <Grid size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
+        {/* Alignment */}
+        <div
           className={cn(
-            "h-8 w-8 p-0",
-            snapToGrid && "bg-blue-100 text-blue-600",
+            "flex items-center gap-0.5 border-r pr-2 mr-2 transition-opacity",
+            !hasMultipleSelection && "opacity-40 pointer-events-none",
           )}
-          onClick={() => setSnapToGrid(!snapToGrid)}
-          title={snapToGrid ? "Snap to Grid: ON" : "Snap to Grid: OFF"}
         >
-          <Settings size={16} />
-        </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onAlignLeft}
+          >
+            <AlignLeft size={16} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onAlignCenter}
+          >
+            <AlignCenter size={16} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onAlignRight}
+          >
+            <AlignRight size={16} />
+          </Button>
+          <Separator orientation="vertical" className="h-4 mx-1" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onAlignTop}
+          >
+            <AlignStartVertical size={16} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onAlignMiddle}
+          >
+            <AlignVerticalJustifyCenter size={16} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onAlignBottom}
+          >
+            <AlignEndVertical size={16} />
+          </Button>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-0.5">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
+            disabled={!hasSelection}
+            onClick={onDeleteNode}
+            title="Delete"
+          >
+            <Trash2 size={16} />
+          </Button>
+          <Separator orientation="vertical" className="h-4 mx-1" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            disabled={!canUndo}
+            onClick={onUndo}
+          >
+            <Undo size={16} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            disabled={!canRedo}
+            onClick={onRedo}
+          >
+            <Redo size={16} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onClear}
+          >
+            <Eraser size={16} />
+          </Button>
+        </div>
       </div>
 
-      {/* Alignment Tools (Only show when multiple items selected) */}
-      <div
-        className={cn(
-          "flex items-center gap-1 border-r pr-2 h-full transition-opacity duration-200",
-          !hasMultipleSelection && "opacity-30 pointer-events-none",
-        )}
-      >
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Align Left"
-          onClick={onAlignLeft}
-        >
-          <AlignLeft size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Align Center"
-          onClick={onAlignCenter}
-        >
-          <AlignCenter size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Align Right"
-          onClick={onAlignRight}
-        >
-          <AlignRight size={16} />
-        </Button>
-        <Separator orientation="vertical" className="h-6 mx-1" />
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Align Top"
-          onClick={onAlignTop}
-        >
-          <AlignStartVertical size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Align Middle"
-          onClick={onAlignMiddle}
-        >
-          <AlignVerticalJustifyCenter size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Align Bottom"
-          onClick={onAlignBottom}
-        >
-          <AlignEndVertical size={16} />
-        </Button>
-        <Separator orientation="vertical" className="h-6 mx-1" />
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Distribute Horizontally"
-          onClick={onDistributeHorizontal}
-        >
-          <StretchHorizontal size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Distribute Vertically"
-          onClick={onDistributeVertical}
-        >
-          <StretchVertical size={16} />
-        </Button>
-      </div>
+      <div className="flex items-center gap-3">
+        <div className="flex items-center bg-gray-100 rounded-md px-1 p-0.5">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7"
+            onClick={onZoomOut}
+          >
+            <ZoomOut size={14} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7"
+            onClick={onFitView}
+          >
+            <Maximize size={14} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7"
+            onClick={onZoomIn}
+          >
+            <ZoomIn size={14} />
+          </Button>
+        </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-1 border-r pr-2 h-full">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Delete Selected"
-          onClick={onDeleteNode}
-          disabled={!hasSelection}
-        >
-          <Trash2 size={16} className={hasSelection ? "text-red-500" : ""} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={cn(
-            "h-8 w-8 p-0",
-            !canUndo && "opacity-50 cursor-not-allowed",
-          )}
-          title="Undo"
-          onClick={onUndo}
-          disabled={!canUndo}
-        >
-          <Undo size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={cn(
-            "h-8 w-8 p-0",
-            !canRedo && "opacity-50 cursor-not-allowed",
-          )}
-          title="Redo"
-          onClick={onRedo}
-          disabled={!canRedo}
-        >
-          <Redo size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Clear Canvas"
-          onClick={onClear}
-        >
-          <Eraser size={16} className="text-orange-500" />
-        </Button>
-      </div>
-
-      {/* Zoom Controls */}
-      <div className="flex items-center gap-1 border-r pr-2 h-full">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Zoom In"
-          onClick={onZoomIn}
-        >
-          <ZoomIn size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Zoom Out"
-          onClick={onZoomOut}
-        >
-          <ZoomOut size={16} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Fit View"
-          onClick={onFitView}
-        >
-          <Maximize size={16} />
-        </Button>
-      </div>
-
-      {/* File Operations */}
-      <div className="flex items-center gap-1 border-r pr-2 h-full">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Save Template"
-          onClick={onSave}
-        >
-          <Save size={16} className="text-green-600" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          title="Load Template"
-          onClick={onLoad}
-        >
-          <Upload size={16} className="text-blue-600" />
-        </Button>
-      </div>
-
-      {/* Template Name */}
-      <div className="ml-auto flex items-center gap-2">
-        <Input
-          value={templateName}
-          onChange={(e) => setTemplateName(e.target.value)}
-          className="h-8 w-40 text-sm"
-          placeholder="Template name..."
-        />
-        <Button variant="default" size="sm" className="h-8" onClick={onSave}>
-          Save
-        </Button>
+        <div className="flex items-center gap-2 border-l pl-3">
+          <Input
+            value={templateName}
+            onChange={(e) => setTemplateName(e.target.value)}
+            className="h-8 w-40 text-sm bg-gray-50"
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 px-2"
+            onClick={onLoad}
+            title="Import JSON"
+          >
+            <Upload size={14} />
+          </Button>
+          <Button size="sm" className="h-8 px-3 gap-1" onClick={onSave}>
+            <Save size={14} /> Save
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,10 @@
+import CanvasEditor from "@/components/canvas/CanvasEditor";
+import React from "react";
+
 export default function CanvasPage() {
   return (
-    <div>
-      <h1>Canvas Dashboard</h1>
+    <div className="h-screen w-full bg-gray-50">
+      <CanvasEditor />
     </div>
   );
 }
