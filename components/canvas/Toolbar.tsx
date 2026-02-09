@@ -29,6 +29,7 @@ import {
   AlignEndVertical, // Bottom
   StretchHorizontal,
   StretchVertical,
+  BoxSelect,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,7 +102,8 @@ export function Toolbar({
   hasMultipleSelection,
 }: ToolbarProps) {
   const tools = [
-    { id: "select", icon: MousePointer2, label: "Select" },
+    { id: "select", icon: MousePointer2, label: "Select (Pan)" },
+    { id: "multi-select", icon: BoxSelect, label: "Multi Select" },
     { id: "rectangle", icon: Square, label: "Rectangle" },
     { id: "circle", icon: Circle, label: "Circle" },
     { id: "line", icon: Minus, label: "Line" },

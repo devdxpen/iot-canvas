@@ -15,6 +15,7 @@ import {
   Edge,
   Connection,
   Panel,
+  SelectionMode,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Toolbar } from "@/components/canvas/Toolbar";
@@ -515,6 +516,18 @@ const CanvasFlow = () => {
     [nodes, selectedNodes, saveToHistory, setNodes],
   );
 
+  const onSelectionChange = useCallback(
+    (params: { nodes: Node[]; edges: Edge[] }) => {
+      setSelectedNodes(params.nodes.map((n) => n.id));
+      if (params.nodes.length === 1) {
+        setSelectedNode(params.nodes[0]);
+      } else {
+        setSelectedNode(null);
+      }
+    },
+    [setSelectedNodes, setSelectedNode],
+  );
+
   return (
     <div className="h-screen w-screen flex flex-col">
       <Toolbar
@@ -575,15 +588,14 @@ const CanvasFlow = () => {
             className="bg-white"
             snapToGrid={snapToGrid}
             snapGrid={[20, 20]}
-            onSelectionChange={(elements) => {
-              setSelectedNodes(elements.nodes.map((n) => n.id));
-              // Set selectedNode for properties panel
-              if (elements.nodes.length === 1) {
-                setSelectedNode(elements.nodes[0]);
-              } else {
-                setSelectedNode(null);
-              }
-            }}
+            onSelectionChange={onSelectionChange}
+            selectionOnDrag={selectedTool === "multi-select"}
+            panOnDrag={selectedTool !== "multi-select"}
+            selectionMode={
+              selectedTool === "multi-select"
+                ? SelectionMode.Full
+                : SelectionMode.Partial
+            }
           >
             <Controls />
             <MiniMap
