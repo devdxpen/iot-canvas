@@ -36,7 +36,7 @@ export function RightSidebar() {
 
           <TabsContent value="style" className="p-4 space-y-6">
             {/* Alignment */}
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               <Label className="text-xs text-gray-500">Alignment</Label>
               <div className="flex bg-gray-100 rounded-md p-1 gap-1">
                 <Button variant="ghost" size="sm" className="flex-1 h-8">
@@ -53,7 +53,7 @@ export function RightSidebar() {
                   <AlignRight size={16} />
                 </Button>
               </div>
-            </div>
+            </div> */}
 
             <Separator />
 
