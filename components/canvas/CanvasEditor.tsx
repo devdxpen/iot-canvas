@@ -422,10 +422,18 @@ const CanvasFlow = () => {
       {showPropertiesPanel && (
         <PropertiesPanel
           selectedNode={selectedNode}
+          selectedNodes={selectedNodes}
+          nodes={nodes}
           onUpdateNode={updateNodeData}
           onDeleteNode={onDeleteNode}
           onDuplicateNode={onDuplicateNode}
           onClose={() => setShowPropertiesPanel(false)}
+          onSelectNode={(nodeId) => {
+            setSelectedNodes([nodeId]);
+            setSelectedNode(nodes.find((n) => n.id === nodeId) || null);
+          }}
+          onAlign={(type) => alignNodes(selectedNodes, type)}
+          onDistribute={(type) => distributeNodes(selectedNodes, type)}
         />
       )}
     </div>
