@@ -1,47 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
-import { Node } from "@xyflow/react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Node } from "@xyflow/react";
 import {
-  X,
-  Copy,
-  Trash2,
-  Settings,
-  Layers,
-  AlignLeft,
   AlignCenter,
-  AlignRight,
-  AlignVerticalJustifyCenter,
-  AlignStartVertical,
   AlignEndVertical,
-  MousePointer2,
-  AlignVerticalSpaceAround,
   AlignHorizontalSpaceAround,
+  AlignLeft,
+  AlignRight,
+  AlignStartVertical,
+  AlignVerticalJustifyCenter,
+  AlignVerticalSpaceAround,
+  Layers,
+  MousePointer2,
   Move,
+  Network,
   Paintbrush,
+  Settings,
   SlidersHorizontal,
   Tag,
-  Network,
 } from "lucide-react";
+import { useState } from "react";
 
 interface PropertiesPanelProps {
   selectedNode: Node | null;
   selectedNodes: string[];
   nodes: Node[];
   onUpdateNode: (nodeId: string, data: Record<string, unknown>) => void;
-  onDeleteNode: (nodeId: string) => void;
-  onDuplicateNode: (node: Node) => void;
   onClose: () => void;
   onSelectNode: (nodeId: string) => void;
   onAlign: (
@@ -76,9 +71,6 @@ export function PropertiesPanel({
   selectedNodes,
   nodes,
   onUpdateNode,
-  onDeleteNode,
-  onDuplicateNode,
-  onClose,
   onSelectNode,
   onAlign,
   onDistribute,
@@ -145,38 +137,12 @@ export function PropertiesPanel({
   ].includes(nodeType);
 
   return (
-    <div className="w-80 bg-white border-l border-gray-200 flex flex-col h-full shadow-xl z-50">
+    <div className="w-80 bg-white border-l border-gray-200 flex flex-col h-full shadow-xl z-50 shrink-0">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50/50">
+      <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50/50">
         <div className="flex items-center gap-2">
           <Settings size={18} className="text-gray-500" />
-          <h3 className="font-semibold text-gray-900">Inspector</h3>
-        </div>
-        <div className="flex items-center gap-1">
-          {selectedNode && (
-            <>
-              <button
-                onClick={() => selectedNode && onDuplicateNode(selectedNode)}
-                className="p-1.5 hover:bg-gray-200 rounded-md transition-colors"
-                title="Clone"
-              >
-                <Copy size={14} className="text-gray-500" />
-              </button>
-              <button
-                onClick={() => selectedNode && onDeleteNode(selectedNode.id)}
-                className="p-1.5 hover:bg-red-100 rounded-md transition-colors"
-                title="Delete"
-              >
-                <Trash2 size={14} className="text-red-500" />
-              </button>
-            </>
-          )}
-          <button
-            onClick={onClose}
-            className="p-1 hover:bg-gray-200 rounded-full transition-colors ml-1"
-          >
-            <X size={18} className="text-gray-500" />
-          </button>
+          <h3 className="font-semibold text-gray-900 text-sm">Inspector</h3>
         </div>
       </div>
 
@@ -186,7 +152,7 @@ export function PropertiesPanel({
         onValueChange={setActiveTab}
         className="flex-1 flex flex-col"
       >
-        <div className="px-3 pt-3 pb-0 bg-white border-b border-gray-100">
+        <div className="px-3 pt-3 pb-3 bg-white border-b border-gray-100">
           <TabsList className="grid w-full grid-cols-3 h-9 bg-gray-100/80 p-0.5 rounded-lg">
             <TabsTrigger
               value="attribute"
@@ -213,9 +179,6 @@ export function PropertiesPanel({
         </div>
 
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          {/* ═══════════════════════════════════════ */}
-          {/* ═══  TAB 1 — ATTRIBUTE  ══════════════ */}
-          {/* ═══════════════════════════════════════ */}
           <TabsContent value="attribute" className="p-0 m-0 h-full">
             {!hasSelection ? (
               <div className="flex flex-col items-center justify-center h-40 text-gray-400">

@@ -214,7 +214,7 @@ export function LeftSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-full shrink-0 select-none z-10 transition-all">
+    <aside className="w-80 bg-white border-r border-gray-200 flex flex-col h-full z-10">
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         {categories.map((category) => {
           const isOpen = openSections.includes(category.id);

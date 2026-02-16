@@ -70,6 +70,7 @@ import { ChartWidget } from "./widgets/ChartWidget";
 import { ApexChartWidget } from "./widgets/ApexChartWidget";
 import { DashboardWidget } from "./widgets/DashboardWidget";
 import { ListWidget } from "./widgets/ListWidget";
+import { LeftSidebar } from "../layout/LeftSidebar";
 
 // ═══════════════════════════════════════════════════════════════
 // NODE_TYPES — maps every sidebar `type` string to its component
@@ -593,113 +594,112 @@ export function CanvasEditor() {
   );
 
   return (
-    <div className="flex flex-col flex-1 h-full overflow-hidden">
-      {/* Top Toolbar */}
-      <Toolbar
-        selectedTool={selectedTool}
-        setSelectedTool={setSelectedTool}
-        onDeleteNode={deleteSelectedNodes}
-        onUndo={undo}
-        onRedo={redo}
-        onZoomIn={() => zoomIn()}
-        onZoomOut={() => zoomOut()}
-        onFitView={() => fitView()}
-        onSave={saveCanvas}
-        onLoad={loadCanvas}
-        onClear={clearCanvas}
-        templateName={templateName}
-        setTemplateName={setTemplateName}
-        canUndo={undoStack.length > 0}
-        canRedo={redoStack.length > 0}
-        onAlignLeft={() => alignNodes("left")}
-        onAlignCenter={() => alignNodes("center")}
-        onAlignRight={() => alignNodes("right")}
-        onAlignTop={() => alignNodes("top")}
-        onAlignMiddle={() => alignNodes("middle")}
-        onAlignBottom={() => alignNodes("bottom")}
-        onDistributeHorizontal={() => distributeNodes("horizontal")}
-        onDistributeVertical={() => distributeNodes("vertical")}
-        showGrid={showGrid}
-        setShowGrid={setShowGrid}
-        snapToGrid={snapToGrid}
-        setSnapToGrid={setSnapToGrid}
-        hasSelection={selectedNodeIds.length > 0}
-        hasMultipleSelection={selectedNodeIds.length > 1}
-      />
+    <div className="flex flex-1 h-full overflow-hidden">
+      {/* Left Sidebar — full height */}
 
-      {/* Canvas + Properties */}
-      <div className="flex flex-1 overflow-hidden">
-        <div
-          ref={reactFlowWrapper}
-          className="flex-1 h-full"
-          onKeyDown={onKeyDown}
-          tabIndex={0}
-        >
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodeClick={onNodeClick}
-            onPaneClick={onPaneClick}
-            onSelectionChange={onSelectionChange}
-            nodeTypes={NODE_TYPES}
-            snapToGrid={snapToGrid}
-            snapGrid={[16, 16]}
-            fitView
-            deleteKeyCode={null}
-            className="bg-gray-50"
-          >
-            {showGrid && (
-              <Background
-                variant={BackgroundVariant.Dots}
-                gap={16}
-                size={1}
-                color="#d1d5db"
-              />
-            )}
-            <Controls
-              position="bottom-left"
-              showInteractive={false}
-              className="shadow-lg! rounded-lg! border! border-gray-200!"
-            />
-            <MiniMap
-              position="bottom-right"
-              className="shadow-lg! rounded-lg! border! border-gray-200!"
-              nodeColor="#6366f1"
-              maskColor="rgba(0,0,0,0.08)"
-              pannable
-              zoomable
-            />
-          </ReactFlow>
-        </div>
-
-        {/* Properties Panel */}
-        {/* Properties Panel — always visible for Layer tab access */}
-        <PropertiesPanel
-          selectedNode={currentSelectedNode}
-          selectedNodes={selectedNodeIds}
-          nodes={nodes}
-          onUpdateNode={updateNodeData}
-          onDeleteNode={deleteNode}
-          onDuplicateNode={duplicateNode}
-          onClose={() => {
-            setSelectedNode(null);
-            setSelectedNodeIds([]);
-          }}
-          onSelectNode={(id) => {
-            const node = nodes.find((n) => n.id === id);
-            if (node) {
-              setSelectedNode(node);
-              setSelectedNodeIds([id]);
-            }
-          }}
-          onAlign={alignNodes}
-          onDistribute={distributeNodes}
+      {/* Center + Right column: Toolbar above, Canvas + Inspector below */}
+      <div className="flex flex-col flex-1 h-full overflow-hidden">
+        {/* Top Toolbar */}
+        <Toolbar
+          selectedTool={selectedTool}
+          setSelectedTool={setSelectedTool}
+          onDeleteNode={deleteSelectedNodes}
+          onUndo={undo}
+          onRedo={redo}
+          onZoomIn={() => zoomIn()}
+          onZoomOut={() => zoomOut()}
+          onFitView={() => fitView()}
+          onSave={saveCanvas}
+          onLoad={loadCanvas}
+          onClear={clearCanvas}
+          templateName={templateName}
+          setTemplateName={setTemplateName}
+          canUndo={undoStack.length > 0}
+          canRedo={redoStack.length > 0}
+          onAlignLeft={() => alignNodes("left")}
+          onAlignCenter={() => alignNodes("center")}
+          onAlignRight={() => alignNodes("right")}
+          onAlignTop={() => alignNodes("top")}
+          onAlignMiddle={() => alignNodes("middle")}
+          onAlignBottom={() => alignNodes("bottom")}
+          onDistributeHorizontal={() => distributeNodes("horizontal")}
+          onDistributeVertical={() => distributeNodes("vertical")}
+          showGrid={showGrid}
+          setShowGrid={setShowGrid}
+          snapToGrid={snapToGrid}
+          setSnapToGrid={setSnapToGrid}
+          hasSelection={selectedNodeIds.length > 0}
+          hasMultipleSelection={selectedNodeIds.length > 1}
         />
+        <div className="flex flex-1 overflow-hidden">
+          <LeftSidebar />
+          <div
+            ref={reactFlowWrapper}
+            className="flex-1 h-full"
+            onKeyDown={onKeyDown}
+            tabIndex={0}
+          >
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onNodeClick={onNodeClick}
+              onPaneClick={onPaneClick}
+              onSelectionChange={onSelectionChange}
+              nodeTypes={NODE_TYPES}
+              snapToGrid={snapToGrid}
+              snapGrid={[16, 16]}
+              fitView
+              deleteKeyCode={null}
+              className="bg-gray-50"
+            >
+              {showGrid && (
+                <Background
+                  variant={BackgroundVariant.Dots}
+                  gap={16}
+                  size={1}
+                  color="#d1d5db"
+                />
+              )}
+              <Controls
+                position="bottom-left"
+                showInteractive={false}
+                className="shadow-lg! rounded-lg! border! border-gray-200!"
+              />
+              <MiniMap
+                position="bottom-right"
+                className="shadow-lg! rounded-lg! border! border-gray-200!"
+                nodeColor="#6366f1"
+                maskColor="rgba(0,0,0,0.08)"
+                pannable
+                zoomable
+              />
+            </ReactFlow>
+          </div>
+          <PropertiesPanel
+            selectedNode={currentSelectedNode}
+            selectedNodes={selectedNodeIds}
+            nodes={nodes}
+            onUpdateNode={updateNodeData}
+            onClose={() => {
+              setSelectedNode(null);
+              setSelectedNodeIds([]);
+            }}
+            onSelectNode={(id) => {
+              const node = nodes.find((n) => n.id === id);
+              if (node) {
+                setSelectedNode(node);
+                setSelectedNodeIds([id]);
+              }
+            }}
+            onAlign={alignNodes}
+            onDistribute={distributeNodes}
+          />
+        </div>
       </div>
     </div>
   );
