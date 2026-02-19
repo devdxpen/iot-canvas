@@ -1,6 +1,6 @@
 "use client";
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Cpu, Wifi, HardDrive, Thermometer } from "lucide-react";
 
 export const DeviceInfoWidget = memo(function DeviceInfoWidget({
@@ -9,11 +9,6 @@ export const DeviceInfoWidget = memo(function DeviceInfoWidget({
   const d = data as Record<string, unknown>;
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 w-[220px]">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-teal-500"
-      />
       <div className="flex items-center gap-2 mb-3">
         <div className="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center">
           <Cpu size={16} className="text-teal-600" />
@@ -57,11 +52,6 @@ export const DeviceInfoWidget = memo(function DeviceInfoWidget({
           <span className="font-medium text-gray-700">4d 12h</span>
         </div>
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-teal-500"
-      />
     </div>
   );
 });

@@ -1,6 +1,6 @@
 "use client";
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 
 const statusConfig: Record<
@@ -35,11 +35,6 @@ export const StatusWidget = memo(function StatusWidget({ data }: NodeProps) {
 
   return (
     <div className={`rounded-xl shadow-lg border-2 p-4 w-[170px] ${cfg.bg}`}>
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-green-500"
-      />
       <span className="text-[10px] text-gray-500 font-medium">
         {(d.label as string) || "Status"}
       </span>
@@ -48,11 +43,6 @@ export const StatusWidget = memo(function StatusWidget({ data }: NodeProps) {
         <span className={`text-sm font-bold ${cfg.color}`}>{cfg.text}</span>
       </div>
       <div className="text-[10px] text-gray-400 mt-2">Updated: just now</div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-green-500"
-      />
     </div>
   );
 });

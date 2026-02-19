@@ -1,6 +1,6 @@
 "use client";
 import React, { memo, useState } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Zap } from "lucide-react";
 
 const funcs = [
@@ -16,11 +16,6 @@ export const FunctionSwitchWidget = memo(function FunctionSwitchWidget({
   const [active, setActive] = useState<number | null>(null);
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 w-[180px]">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-emerald-500"
-      />
       <div className="flex items-center gap-1.5 mb-2">
         <Zap size={12} className="text-emerald-500" />
         <span className="text-[10px] text-gray-500 font-medium">
@@ -38,11 +33,6 @@ export const FunctionSwitchWidget = memo(function FunctionSwitchWidget({
           </button>
         ))}
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-emerald-500"
-      />
     </div>
   );
 });

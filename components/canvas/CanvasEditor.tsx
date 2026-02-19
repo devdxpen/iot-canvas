@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useMemo,
+  useEffect,
+} from "react";
 import {
   ReactFlow,
   Background,
@@ -8,8 +14,6 @@ import {
   MiniMap,
   Node,
   Edge,
-  Connection,
-  addEdge,
   useNodesState,
   useEdgesState,
   useReactFlow,
@@ -49,6 +53,11 @@ import { BarrageWidget } from "./widgets/BarrageWidget";
 import { FlowBarWidget } from "./widgets/FlowBarWidget";
 import { PipeWidget } from "./widgets/PipeWidget";
 import { OvalWidget } from "./widgets/OvalWidget";
+import { LineWidget } from "./widgets/LineWidget";
+import { RectangleWidget } from "./widgets/RectangleWidget";
+import { CircleWidget } from "./widgets/CircleWidget";
+import { TriangleWidget } from "./widgets/TriangleWidget";
+import { TableWidget } from "./widgets/TableWidget";
 
 // ─── Widget imports: IoT / Display ────────────────────────────
 import { TemperatureWidget } from "./widgets/TemperatureWidget";
@@ -126,12 +135,12 @@ const NODE_TYPES: NodeTypes = {
   "devices-list": ListWidget,
 
   // ── Shapes ──
-  line: CustomNode,
-  rectangle: CustomNode,
-  circle: CustomNode,
-  triangle: CustomNode,
+  line: LineWidget,
+  rectangle: RectangleWidget,
+  circle: CircleWidget,
+  triangle: TriangleWidget,
   oval: OvalWidget,
-  table: CustomNode,
+  table: TableWidget,
 
   // ── IoT / Display / Controls (from ShapePalette) ──
   temperature: TemperatureWidget,
@@ -202,12 +211,68 @@ const DEFAULT_DATA: Record<string, Record<string, unknown>> = {
   "devices-list": { label: "Devices List" },
 
   // Shapes
-  line: { label: "Line" },
-  rectangle: { label: "Rectangle" },
-  circle: { label: "Circle" },
-  triangle: { label: "Triangle" },
-  oval: { label: "Oval" },
-  table: { label: "Table" },
+  line: {
+    label: "Line",
+    strokeColor: "#374151",
+    strokeWidth: 2,
+    dashStyle: "solid",
+    width: 200,
+    height: 4,
+    opacity: 100,
+  },
+  rectangle: {
+    label: "Rectangle",
+    fillColor: "#ffffff",
+    borderColor: "#9ca3af",
+    borderWidth: 2,
+    opacity: 100,
+    borderRadius: 4,
+    width: 160,
+    height: 100,
+  },
+  circle: {
+    label: "Circle",
+    fillColor: "#ffffff",
+    borderColor: "#9ca3af",
+    borderWidth: 2,
+    opacity: 100,
+    width: 120,
+  },
+  triangle: {
+    label: "Triangle",
+    fillColor: "#ffffff",
+    borderColor: "#9ca3af",
+    borderWidth: 2,
+    opacity: 100,
+    width: 140,
+    height: 120,
+  },
+  oval: {
+    label: "Oval",
+    fillColor: "#ffffff",
+    borderColor: "#9ca3af",
+    borderWidth: 2,
+    opacity: 100,
+    width: 160,
+    height: 100,
+  },
+  table: {
+    label: "Table",
+    rows: 4,
+    columns: 3,
+    headerBgColor: "#3b82f6",
+    borderColor: "#e5e7eb",
+    borderWidth: 1,
+    fontColor: "#1f2937",
+    fontSize: 13,
+    opacity: 100,
+    cellData: [
+      ["Header 1", "Header 2", "Header 3"],
+      ["Row 1 Col 1", "Row 1 Col 2", "Row 1 Col 3"],
+      ["Row 2 Col 1", "Row 2 Col 2", "Row 2 Col 3"],
+      ["Row 3 Col 1", "Row 3 Col 2", "Row 3 Col 3"],
+    ],
+  },
 
   // IoT
   temperature: { label: "Temperature", value: 25 },
@@ -234,7 +299,7 @@ const getId = () => `node_${++nodeId}_${Date.now()}`;
 
 export function CanvasEditor() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const { screenToFlowPosition, fitView, zoomIn, zoomOut } = useReactFlow();
+  const { screenToFlowPosition, fitBounds, zoomIn, zoomOut } = useReactFlow();
 
   // ── State ──
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([] as Node[]);
@@ -245,6 +310,9 @@ export function CanvasEditor() {
   const [templateName, setTemplateName] = useState("Untitled Canvas");
   const [showGrid, setShowGrid] = useState(true);
   const [snapToGrid, setSnapToGrid] = useState(false);
+  const [canvasSize, setCanvasSize] = useState({ width: 1920, height: 1080 });
+  const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+  const [backgroundImage, setBackgroundImage] = useState("");
 
   // ── Undo / Redo stacks ──
   const [undoStack, setUndoStack] = useState<
@@ -261,15 +329,6 @@ export function CanvasEditor() {
     ]);
     setRedoStack([]);
   }, [nodes, edges]);
-
-  // ── Edge connection ──
-  const onConnect = useCallback(
-    (params: Connection) => {
-      pushUndo();
-      setEdges((eds) => addEdge(params, eds));
-    },
-    [setEdges, pushUndo],
-  );
 
   // ── Selection handling ──
   const onSelectionChange = useCallback(
@@ -310,10 +369,16 @@ export function CanvasEditor() {
 
       pushUndo();
 
-      const position = screenToFlowPosition({
+      let position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
+
+      // Clamp position to be within canvas bounds
+      position = {
+        x: Math.max(0, Math.min(position.x, canvasSize.width - 100)), // prevent spawning right on edge
+        y: Math.max(0, Math.min(position.y, canvasSize.height - 50)),
+      };
 
       const newNode: Node = {
         id: getId(),
@@ -324,7 +389,7 @@ export function CanvasEditor() {
 
       setNodes((nds) => [...nds, newNode]);
     },
-    [screenToFlowPosition, setNodes, pushUndo],
+    [screenToFlowPosition, setNodes, pushUndo, canvasSize],
   );
 
   // ── Node actions ──
@@ -343,34 +408,6 @@ export function CanvasEditor() {
     setSelectedNodeIds([]);
   }, [selectedNodeIds, setNodes, setEdges, pushUndo]);
 
-  const deleteNode = useCallback(
-    (nodeId: string) => {
-      pushUndo();
-      setNodes((nds) => nds.filter((n) => n.id !== nodeId));
-      setEdges((eds) =>
-        eds.filter((e) => e.source !== nodeId && e.target !== nodeId),
-      );
-      setSelectedNode(null);
-      setSelectedNodeIds([]);
-    },
-    [setNodes, setEdges, pushUndo],
-  );
-
-  const duplicateNode = useCallback(
-    (node: Node) => {
-      pushUndo();
-      const newNode: Node = {
-        ...node,
-        id: getId(),
-        position: { x: node.position.x + 30, y: node.position.y + 30 },
-        data: { ...node.data },
-        selected: false,
-      };
-      setNodes((nds) => [...nds, newNode]);
-    },
-    [setNodes, pushUndo],
-  );
-
   const updateNodeData = useCallback(
     (nodeId: string, data: Record<string, unknown>) => {
       setNodes((nds) => nds.map((n) => (n.id === nodeId ? { ...n, data } : n)));
@@ -381,6 +418,26 @@ export function CanvasEditor() {
     },
     [setNodes],
   );
+
+  // ── Table cell edit listener ──
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { nodeId: nid, row, col, value } = (e as CustomEvent).detail;
+      setNodes((nds) =>
+        nds.map((n) => {
+          if (n.id !== nid) return n;
+          const d = n.data as Record<string, unknown>;
+          const cellData = (d.cellData as string[][]) || [];
+          const updated = cellData.map((r, ri) =>
+            ri === row ? r.map((c, ci) => (ci === col ? value : c)) : [...r],
+          );
+          return { ...n, data: { ...d, cellData: updated } };
+        }),
+      );
+    };
+    document.addEventListener("table-cell-edit", handler);
+    return () => document.removeEventListener("table-cell-edit", handler);
+  }, [setNodes]);
 
   // ── Undo / Redo ──
   const undo = useCallback(() => {
@@ -608,7 +665,17 @@ export function CanvasEditor() {
           onRedo={redo}
           onZoomIn={() => zoomIn()}
           onZoomOut={() => zoomOut()}
-          onFitView={() => fitView()}
+          onFitView={() =>
+            fitBounds(
+              {
+                x: 0,
+                y: 0,
+                width: canvasSize.width,
+                height: canvasSize.height,
+              },
+              { padding: 0.1 },
+            )
+          }
           onSave={saveCanvas}
           onLoad={loadCanvas}
           onClear={clearCanvas}
@@ -622,14 +689,18 @@ export function CanvasEditor() {
           onAlignTop={() => alignNodes("top")}
           onAlignMiddle={() => alignNodes("middle")}
           onAlignBottom={() => alignNodes("bottom")}
-          onDistributeHorizontal={() => distributeNodes("horizontal")}
-          onDistributeVertical={() => distributeNodes("vertical")}
           showGrid={showGrid}
           setShowGrid={setShowGrid}
           snapToGrid={snapToGrid}
           setSnapToGrid={setSnapToGrid}
           hasSelection={selectedNodeIds.length > 0}
           hasMultipleSelection={selectedNodeIds.length > 1}
+          canvasSize={canvasSize}
+          setCanvasSize={setCanvasSize}
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
+          backgroundImage={backgroundImage}
+          setBackgroundImage={setBackgroundImage}
         />
         <div className="flex flex-1 overflow-hidden">
           <LeftSidebar />
@@ -644,7 +715,6 @@ export function CanvasEditor() {
               edges={edges}
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
               onDrop={onDrop}
               onDragOver={onDragOver}
               onNodeClick={onNodeClick}
@@ -653,10 +723,45 @@ export function CanvasEditor() {
               nodeTypes={NODE_TYPES}
               snapToGrid={snapToGrid}
               snapGrid={[16, 16]}
-              fitView
+              minZoom={0.1}
+              maxZoom={4}
+              nodeExtent={[
+                [0, 0],
+                [canvasSize.width, canvasSize.height],
+              ]}
+              onInit={(instance) => {
+                // Fit the view to the artboard bounds on initialization
+                instance.fitBounds(
+                  {
+                    x: 0,
+                    y: 0,
+                    width: canvasSize.width,
+                    height: canvasSize.height,
+                  },
+                  { padding: 0.1 },
+                );
+              }}
               deleteKeyCode={null}
-              className="bg-gray-50"
+              className="bg-gray-100"
             >
+              <div
+                style={{
+                  width: canvasSize.width,
+                  height: canvasSize.height,
+                  backgroundColor: backgroundColor,
+                  backgroundImage: backgroundImage
+                    ? `url(${backgroundImage})`
+                    : undefined,
+                  backgroundSize: "100% 100%",
+                  backgroundRepeat: "no-repeat",
+                  boxShadow: "0 0 20px rgba(0,0,0,0.1)",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  zIndex: -1,
+                  pointerEvents: "none",
+                }}
+              />
               {showGrid && (
                 <Background
                   variant={BackgroundVariant.Dots}

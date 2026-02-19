@@ -2,32 +2,30 @@
 import React, { memo } from "react";
 import { NodeProps } from "@xyflow/react";
 
-interface OvalData extends Record<string, unknown> {
+interface CircleData extends Record<string, unknown> {
   fillColor?: string;
   borderColor?: string;
   borderWidth?: number;
   opacity?: number;
   width?: number;
-  height?: number;
   label?: string;
 }
 
-export const OvalWidget = memo(function OvalWidget({ data }: NodeProps) {
-  const d = data as OvalData;
+export const CircleWidget = memo(function CircleWidget({ data }: NodeProps) {
+  const d = data as CircleData;
   const fillColor = d.fillColor || "#ffffff";
   const borderColor = d.borderColor || "#9ca3af";
   const borderWidth = d.borderWidth ?? 2;
   const opacity = (d.opacity ?? 100) / 100;
-  const width = d.width || 160;
-  const height = d.height || 100;
+  const size = d.width || 120;
 
   return (
     <div
       className="relative flex items-center justify-center"
-      style={{ width, height }}
+      style={{ width: size, height: size }}
     >
       <div
-        className="w-full h-full rounded-[50%] shadow-sm flex items-center justify-center"
+        className="w-full h-full rounded-full shadow-sm flex items-center justify-center"
         style={{
           backgroundColor: fillColor,
           border: `${borderWidth}px solid ${borderColor}`,

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Card } from "@/components/ui/card";
 import { Zap, Activity, MoreHorizontal } from "lucide-react";
 import {
@@ -90,11 +90,6 @@ export function VoltageWidget({ id }: NodeProps) {
           ref={cardRef}
           className="w-64 shadow-lg border border-gray-100 bg-white overflow-hidden"
         >
-          <Handle
-            type="target"
-            position={Position.Top}
-            className="w-3 h-3 bg-blue-500"
-          />
 
           <div className="flex">
             {/* Voltage Section */}
@@ -160,12 +155,6 @@ export function VoltageWidget({ id }: NodeProps) {
           <div className="text-xs text-gray-400 p-2 text-center">
             ID: {id.slice(0, 8)}
           </div>
-
-          <Handle
-            type="source"
-            position={Position.Bottom}
-            className="w-3 h-3 bg-blue-500"
-          />
         </Card>
       </ContextMenuTrigger>
 

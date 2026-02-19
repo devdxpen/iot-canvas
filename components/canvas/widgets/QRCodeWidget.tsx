@@ -1,16 +1,11 @@
 "use client";
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 export const QRCodeWidget = memo(function QRCodeWidget({ data }: NodeProps) {
   const d = data as Record<string, unknown>;
   // Simple SVG-based QR pattern (dummy)
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 w-[160px] text-center">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-gray-500"
-      />
       <span className="text-[10px] text-gray-400 font-medium block mb-2">
         {(d.label as string) || "QR Code"}
       </span>
@@ -43,11 +38,6 @@ export const QRCodeWidget = memo(function QRCodeWidget({ data }: NodeProps) {
       <span className="text-[9px] text-gray-400 mt-2 block">
         Scan to connect
       </span>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-gray-500"
-      />
     </div>
   );
 });

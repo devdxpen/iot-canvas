@@ -1,6 +1,6 @@
 "use client";
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Terminal } from "lucide-react";
 
 const logLines = [
@@ -20,11 +20,6 @@ export const ConsoleWidget = memo(function ConsoleWidget({ data }: NodeProps) {
   const d = data as Record<string, unknown>;
   return (
     <div className="bg-gray-900 rounded-xl shadow-lg border border-gray-700 w-[260px] overflow-hidden">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-green-500"
-      />
       <div className="flex items-center gap-2 px-3 py-2 bg-gray-800 border-b border-gray-700">
         <Terminal size={12} className="text-green-400" />
         <span className="text-[10px] text-gray-400 font-medium">
@@ -44,11 +39,6 @@ export const ConsoleWidget = memo(function ConsoleWidget({ data }: NodeProps) {
           </div>
         ))}
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-green-500"
-      />
     </div>
   );
 });

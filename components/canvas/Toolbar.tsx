@@ -1,39 +1,43 @@
 "use client";
 
-import React from "react";
+import { Button } from "@/components/ui/button";
 import {
-  MousePointer2,
-  Square,
-  Circle,
-  Type,
-  Image as ImageIcon,
-  Table,
-  Minus,
-  Triangle,
-  Trash2,
-  Undo,
-  Redo,
-  ZoomIn,
-  ZoomOut,
-  Save,
-  Upload,
-  Settings,
-  Grid,
-  Maximize,
-  Eraser,
-  AlignLeft,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
+import {
   AlignCenter,
+  AlignEndVertical,
+  AlignLeft,
   AlignRight,
   AlignStartVertical,
   AlignVerticalJustifyCenter,
-  AlignEndVertical,
-  StretchHorizontal,
-  StretchVertical,
+  Circle,
+  Eraser,
+  Image as ImageIcon,
+  Maximize,
+  Minus,
+  MousePointer2,
+  Redo,
+  Save,
+  Settings,
+  Square,
+  Trash2,
+  Triangle,
+  Type,
+  Undo,
+  Upload,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 
 interface ToolbarProps {
   selectedTool: string;
@@ -57,14 +61,18 @@ interface ToolbarProps {
   onAlignTop: () => void;
   onAlignMiddle: () => void;
   onAlignBottom: () => void;
-  onDistributeHorizontal: () => void;
-  onDistributeVertical: () => void;
   showGrid: boolean;
   setShowGrid: (show: boolean) => void;
   snapToGrid: boolean;
   setSnapToGrid: (snap: boolean) => void;
   hasSelection: boolean;
   hasMultipleSelection: boolean;
+  canvasSize: { width: number; height: number };
+  setCanvasSize: (size: { width: number; height: number }) => void;
+  backgroundColor: string;
+  setBackgroundColor: (color: string) => void;
+  backgroundImage: string;
+  setBackgroundImage: (image: string) => void;
 }
 
 export function Toolbar({
@@ -89,14 +97,18 @@ export function Toolbar({
   onAlignTop,
   onAlignMiddle,
   onAlignBottom,
-  onDistributeHorizontal,
-  onDistributeVertical,
   showGrid,
   setShowGrid,
   snapToGrid,
   setSnapToGrid,
   hasSelection,
   hasMultipleSelection,
+  canvasSize,
+  setCanvasSize,
+  backgroundColor,
+  setBackgroundColor,
+  backgroundImage,
+  setBackgroundImage,
 }: ToolbarProps) {
   const tools = [
     { id: "select", icon: MousePointer2, label: "Select" },
@@ -107,6 +119,19 @@ export function Toolbar({
     { id: "text", icon: Type, label: "Text" },
     { id: "image", icon: ImageIcon, label: "Image" },
   ];
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setBackgroundImage(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div className="bg-white border-b h-14 px-4 flex items-center justify-between shadow-sm z-10">
@@ -130,26 +155,150 @@ export function Toolbar({
           ))}
         </div>
 
-        {/* View Controls */}
+        {/* View Controls & Settings */}
         <div className="flex items-center gap-0.5 border-r pr-2 mr-2">
-          <Button
-            variant={showGrid ? "secondary" : "ghost"}
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => setShowGrid(!showGrid)}
-            title="Toggle Grid"
-          >
-            <Grid size={16} />
-          </Button>
-          <Button
-            variant={snapToGrid ? "secondary" : "ghost"}
-            size="icon"
-            className={cn("h-8 w-8", snapToGrid && "text-blue-600")}
-            onClick={() => setSnapToGrid(!snapToGrid)}
-            title="Snap to Grid"
-          >
-            <Settings size={16} />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant={showGrid || snapToGrid ? "secondary" : "ghost"}
+                size="icon"
+                className={cn(
+                  "h-8 w-8",
+                  (showGrid || snapToGrid) && "text-blue-600",
+                )}
+                title="Canvas Settings"
+              >
+                <Settings size={16} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="start">
+              <DropdownMenuLabel>Canvas Settings</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <div className="p-2 space-y-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Canvas Size (px)</Label>
+                  <div className="flex items-center gap-2">
+                    <div className="grid gap-1">
+                      <Label
+                        htmlFor="width"
+                        className="text-[10px] text-gray-500"
+                      >
+                        W
+                      </Label>
+                      <Input
+                        id="width"
+                        type="number"
+                        value={canvasSize?.width || 800}
+                        onChange={(e) =>
+                          setCanvasSize?.({
+                            ...canvasSize,
+                            width: parseInt(e.target.value) || 0,
+                          })
+                        }
+                        className="h-7 text-xs"
+                      />
+                    </div>
+                    <div className="grid gap-1">
+                      <Label
+                        htmlFor="height"
+                        className="text-[10px] text-gray-500"
+                      >
+                        H
+                      </Label>
+                      <Input
+                        id="height"
+                        type="number"
+                        value={canvasSize?.height || 600}
+                        onChange={(e) =>
+                          setCanvasSize?.({
+                            ...canvasSize,
+                            height: parseInt(e.target.value) || 0,
+                          })
+                        }
+                        className="h-7 text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Background</Label>
+                  <div className="grid gap-2">
+                    <div className="flex items-center justify-between">
+                      <Label
+                        htmlFor="bg-color"
+                        className="text-[10px] text-gray-500"
+                      >
+                        Color
+                      </Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="bg-color"
+                          type="color"
+                          value={backgroundColor}
+                          onChange={(e) => setBackgroundColor(e.target.value)}
+                          className="h-6 w-12 p-0 border-0"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid gap-1">
+                      <Label
+                        htmlFor="bg-image"
+                        className="text-[10px] text-gray-500"
+                      >
+                        Image
+                      </Label>
+                      <Input
+                        id="bg-image"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="h-7 text-[10px] file:text-[10px] file:h-full file:mr-2"
+                      />
+                      {backgroundImage && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 text-[10px] text-red-500 justify-start px-0"
+                          onClick={() => setBackgroundImage("")}
+                        >
+                          Remove Image
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="show-grid" className="text-xs">
+                    Show Grid
+                  </Label>
+                  <Switch
+                    id="show-grid"
+                    checked={showGrid}
+                    onCheckedChange={setShowGrid}
+                    className="scale-75"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="snap-grid" className="text-xs">
+                    Snap to Grid
+                  </Label>
+                  <Switch
+                    id="snap-grid"
+                    checked={snapToGrid}
+                    onCheckedChange={setSnapToGrid}
+                    className="scale-75"
+                  />
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Alignment */}

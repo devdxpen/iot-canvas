@@ -1,6 +1,6 @@
 "use client";
 import React, { memo, useState, useEffect } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Clock } from "lucide-react";
 
 export const TimeWidget = memo(function TimeWidget({ data }: NodeProps) {
@@ -14,11 +14,6 @@ export const TimeWidget = memo(function TimeWidget({ data }: NodeProps) {
 
   return (
     <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl shadow-lg border border-slate-700 p-4 w-[180px] text-center">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-cyan-500"
-      />
       <div className="flex items-center justify-center gap-1.5 mb-2">
         <Clock size={12} className="text-cyan-400" />
         <span className="text-[10px] text-slate-400 font-medium">
@@ -35,11 +30,6 @@ export const TimeWidget = memo(function TimeWidget({ data }: NodeProps) {
           day: "numeric",
         })}
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-cyan-500"
-      />
     </div>
   );
 });

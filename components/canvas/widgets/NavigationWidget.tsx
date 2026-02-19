@@ -1,6 +1,6 @@
 "use client";
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import {
   Compass,
   ArrowUp,
@@ -15,11 +15,6 @@ export const NavigationWidget = memo(function NavigationWidget({
   const d = data as Record<string, unknown>;
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 w-[150px] text-center">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-orange-500"
-      />
       <div className="flex items-center justify-center gap-1 mb-2">
         <Compass size={12} className="text-orange-500" />
         <span className="text-[10px] text-gray-500 font-medium">
@@ -47,11 +42,6 @@ export const NavigationWidget = memo(function NavigationWidget({
         </button>
         <div />
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-orange-500"
-      />
     </div>
   );
 });

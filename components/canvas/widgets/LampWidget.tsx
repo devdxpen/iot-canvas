@@ -1,6 +1,6 @@
 "use client";
 import React, { memo, useState } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 
 export const LampWidget = memo(function LampWidget({ data, type }: NodeProps) {
   const d = data as Record<string, unknown>;
@@ -13,11 +13,6 @@ export const LampWidget = memo(function LampWidget({ data, type }: NodeProps) {
       className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 w-[150px] text-center"
       onClick={() => setIsOn(!isOn)}
     >
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-yellow-500"
-      />
       <span className="text-[10px] text-gray-400 font-medium">{label}</span>
       <div
         className={`w-12 h-12 rounded-full mx-auto mt-2 mb-2 transition-all duration-300 ${isOn ? "bg-green-400 shadow-[0_0_20px_rgba(34,197,94,0.5)]" : "bg-gray-300"}`}
@@ -27,11 +22,6 @@ export const LampWidget = memo(function LampWidget({ data, type }: NodeProps) {
       >
         {isBit ? (isOn ? "1" : "0") : isOn ? "ON" : "OFF"}
       </span>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-yellow-500"
-      />
     </div>
   );
 });

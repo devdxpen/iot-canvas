@@ -22,12 +22,15 @@ import {
   AlignVerticalJustifyCenter,
   AlignVerticalSpaceAround,
   Layers,
+  Minus,
   MousePointer2,
   Move,
   Network,
   Paintbrush,
+  Plus,
   Settings,
   SlidersHorizontal,
+  Table2,
   Tag,
 } from "lucide-react";
 import { useState } from "react";
@@ -117,6 +120,16 @@ export function PropertiesPanel({
     };
     return labels[type] || type;
   };
+
+  // Shape type helpers
+  const isLineType = nodeType === "line";
+  const isFilledShapeType = [
+    "rectangle",
+    "circle",
+    "triangle",
+    "oval",
+  ].includes(nodeType);
+  const isTableType = nodeType === "table";
 
   // Check if node type is an IoT widget (has device tags)
   const isIoTWidget = [
@@ -291,7 +304,14 @@ export function PropertiesPanel({
                 {!isMultiSelect && selectedNode && (
                   <Accordion
                     type="multiple"
-                    defaultValue={["position", "style", "basic"]}
+                    defaultValue={[
+                      "position",
+                      "style",
+                      "basic",
+                      "line-props",
+                      "shape-props",
+                      "table-props",
+                    ]}
                     className="w-full"
                   >
                     {/* ─── POSITION ACCORDION ─── */}
@@ -760,6 +780,607 @@ export function PropertiesPanel({
                         </div>
                       </AccordionContent>
                     </AccordionItem>
+
+                    {/* ─── LINE PROPERTIES ACCORDION ─── */}
+                    {isLineType && (
+                      <AccordionItem
+                        value="line-props"
+                        className="border-b border-gray-100"
+                      >
+                        <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-gray-50/50">
+                          <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                            <Minus size={14} className="text-orange-500" />
+                            Line Properties
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-4 pb-4">
+                          <div className="space-y-4">
+                            {/* Stroke Color */}
+                            <div className="space-y-2">
+                              <span className="text-[10px] text-gray-400 font-medium">
+                                Stroke Color
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <div className="relative w-8 h-8 rounded-md border border-gray-200 overflow-hidden shrink-0">
+                                  <input
+                                    type="color"
+                                    value={
+                                      (nodeData.strokeColor as string) ||
+                                      "#374151"
+                                    }
+                                    onChange={(e) =>
+                                      updateField("strokeColor", e.target.value)
+                                    }
+                                    className="absolute inset-0 w-full h-full cursor-pointer"
+                                  />
+                                </div>
+                                <Input
+                                  value={
+                                    (nodeData.strokeColor as string) ||
+                                    "#374151"
+                                  }
+                                  onChange={(e) =>
+                                    updateField("strokeColor", e.target.value)
+                                  }
+                                  className="h-8 text-xs font-mono flex-1"
+                                  placeholder="#374151"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Stroke Width */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-[10px] text-gray-400 font-medium">
+                                  Stroke Width
+                                </span>
+                                <span className="text-[10px] text-gray-400">
+                                  {(nodeData.strokeWidth as number) || 2}px
+                                </span>
+                              </div>
+                              <Slider
+                                value={[(nodeData.strokeWidth as number) || 2]}
+                                onValueChange={([v]) =>
+                                  updateField("strokeWidth", v)
+                                }
+                                min={1}
+                                max={10}
+                                step={1}
+                              />
+                            </div>
+
+                            {/* Dash Style */}
+                            <div className="space-y-2">
+                              <span className="text-[10px] text-gray-400 font-medium">
+                                Dash Style
+                              </span>
+                              <div className="flex gap-1.5 p-1 bg-gray-100 rounded-lg">
+                                {["solid", "dashed", "dotted"].map((style) => (
+                                  <button
+                                    key={style}
+                                    onClick={() =>
+                                      updateField("dashStyle", style)
+                                    }
+                                    className={`flex-1 py-1.5 text-[10px] font-medium capitalize rounded-md transition-all ${
+                                      (nodeData.dashStyle || "solid") === style
+                                        ? "bg-white text-gray-900 shadow-sm"
+                                        : "text-gray-500 hover:bg-gray-200"
+                                    }`}
+                                  >
+                                    {style}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Line Length */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-[10px] text-gray-400 font-medium">
+                                  Length
+                                </span>
+                                <span className="text-[10px] text-gray-400">
+                                  {(nodeData.width as number) || 200}px
+                                </span>
+                              </div>
+                              <Slider
+                                value={[(nodeData.width as number) || 200]}
+                                onValueChange={([v]) => updateField("width", v)}
+                                min={50}
+                                max={600}
+                                step={10}
+                              />
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
+
+                    {/* ─── FILLED SHAPE PROPERTIES ACCORDION ─── */}
+                    {isFilledShapeType && (
+                      <AccordionItem
+                        value="shape-props"
+                        className="border-b border-gray-100"
+                      >
+                        <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-gray-50/50">
+                          <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                            <Paintbrush size={14} className="text-cyan-500" />
+                            Shape Properties
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-4 pb-4">
+                          <div className="space-y-4">
+                            {/* Fill Color */}
+                            <div className="space-y-2">
+                              <span className="text-[10px] text-gray-400 font-medium">
+                                Fill Color
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <div className="relative w-8 h-8 rounded-md border border-gray-200 overflow-hidden shrink-0">
+                                  <input
+                                    type="color"
+                                    value={
+                                      (nodeData.fillColor as string) ||
+                                      "#ffffff"
+                                    }
+                                    onChange={(e) =>
+                                      updateField("fillColor", e.target.value)
+                                    }
+                                    className="absolute inset-0 w-full h-full cursor-pointer"
+                                  />
+                                </div>
+                                <Input
+                                  value={
+                                    (nodeData.fillColor as string) || "#ffffff"
+                                  }
+                                  onChange={(e) =>
+                                    updateField("fillColor", e.target.value)
+                                  }
+                                  className="h-8 text-xs font-mono flex-1"
+                                  placeholder="#ffffff"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Border Color */}
+                            <div className="space-y-2">
+                              <span className="text-[10px] text-gray-400 font-medium">
+                                Border Color
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <div className="relative w-8 h-8 rounded-md border border-gray-200 overflow-hidden shrink-0">
+                                  <input
+                                    type="color"
+                                    value={
+                                      (nodeData.borderColor as string) ||
+                                      "#9ca3af"
+                                    }
+                                    onChange={(e) =>
+                                      updateField("borderColor", e.target.value)
+                                    }
+                                    className="absolute inset-0 w-full h-full cursor-pointer"
+                                  />
+                                </div>
+                                <Input
+                                  value={
+                                    (nodeData.borderColor as string) ||
+                                    "#9ca3af"
+                                  }
+                                  onChange={(e) =>
+                                    updateField("borderColor", e.target.value)
+                                  }
+                                  className="h-8 text-xs font-mono flex-1"
+                                  placeholder="#9ca3af"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Border Width */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-[10px] text-gray-400 font-medium">
+                                  Border Width
+                                </span>
+                                <span className="text-[10px] text-gray-400">
+                                  {(nodeData.borderWidth as number) ?? 2}px
+                                </span>
+                              </div>
+                              <Slider
+                                value={[(nodeData.borderWidth as number) ?? 2]}
+                                onValueChange={([v]) =>
+                                  updateField("borderWidth", v)
+                                }
+                                min={0}
+                                max={10}
+                                step={1}
+                              />
+                            </div>
+
+                            {/* Opacity */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-[10px] text-gray-400 font-medium">
+                                  Opacity
+                                </span>
+                                <span className="text-[10px] text-gray-400">
+                                  {(nodeData.opacity as number) ?? 100}%
+                                </span>
+                              </div>
+                              <Slider
+                                value={[(nodeData.opacity as number) ?? 100]}
+                                onValueChange={([v]) =>
+                                  updateField("opacity", v)
+                                }
+                                min={10}
+                                max={100}
+                                step={5}
+                              />
+                            </div>
+
+                            {/* Border Radius (Rectangle only) */}
+                            {nodeType === "rectangle" && (
+                              <div className="space-y-2">
+                                <div className="flex justify-between">
+                                  <span className="text-[10px] text-gray-400 font-medium">
+                                    Border Radius
+                                  </span>
+                                  <span className="text-[10px] text-gray-400">
+                                    {(nodeData.borderRadius as number) ?? 4}px
+                                  </span>
+                                </div>
+                                <Slider
+                                  value={[
+                                    (nodeData.borderRadius as number) ?? 4,
+                                  ]}
+                                  onValueChange={([v]) =>
+                                    updateField("borderRadius", v)
+                                  }
+                                  min={0}
+                                  max={50}
+                                  step={1}
+                                />
+                              </div>
+                            )}
+
+                            {/* Size Controls */}
+                            <div className="space-y-2">
+                              <span className="text-[10px] text-gray-400 font-medium">
+                                Size
+                              </span>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <span className="text-[10px] text-gray-400 mb-1 block">
+                                    Width
+                                  </span>
+                                  <Input
+                                    type="number"
+                                    className="h-8 text-xs font-mono"
+                                    value={(nodeData.width as number) || 160}
+                                    onChange={(e) =>
+                                      updateField(
+                                        "width",
+                                        parseInt(e.target.value) || 160,
+                                      )
+                                    }
+                                    min={20}
+                                  />
+                                </div>
+                                <div>
+                                  <span className="text-[10px] text-gray-400 mb-1 block">
+                                    Height
+                                  </span>
+                                  <Input
+                                    type="number"
+                                    className="h-8 text-xs font-mono"
+                                    value={(nodeData.height as number) || 100}
+                                    onChange={(e) =>
+                                      updateField(
+                                        "height",
+                                        parseInt(e.target.value) || 100,
+                                      )
+                                    }
+                                    min={20}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
+
+                    {/* ─── TABLE PROPERTIES ACCORDION ─── */}
+                    {isTableType && (
+                      <AccordionItem
+                        value="table-props"
+                        className="border-b border-gray-100"
+                      >
+                        <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-gray-50/50">
+                          <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                            <Table2 size={14} className="text-blue-500" />
+                            Table Properties
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-4 pb-4">
+                          <div className="space-y-4">
+                            {/* Rows & Columns */}
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="space-y-1.5">
+                                <span className="text-[10px] text-gray-400 font-medium">
+                                  Rows
+                                </span>
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() => {
+                                      const r = Math.max(
+                                        2,
+                                        ((nodeData.rows as number) || 4) - 1,
+                                      );
+                                      const cellData =
+                                        (nodeData.cellData as string[][]) || [];
+                                      updateField("rows", r);
+                                      updateField(
+                                        "cellData",
+                                        cellData.slice(0, r),
+                                      );
+                                    }}
+                                  >
+                                    <Minus size={12} />
+                                  </Button>
+                                  <span className="text-xs font-mono w-8 text-center">
+                                    {(nodeData.rows as number) || 4}
+                                  </span>
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() => {
+                                      const r =
+                                        ((nodeData.rows as number) || 4) + 1;
+                                      const cols =
+                                        (nodeData.columns as number) || 3;
+                                      const cellData =
+                                        (nodeData.cellData as string[][]) || [];
+                                      const newRow = Array.from(
+                                        { length: cols },
+                                        (_, c) => `Row ${r - 1} Col ${c + 1}`,
+                                      );
+                                      updateField("rows", r);
+                                      updateField("cellData", [
+                                        ...cellData,
+                                        newRow,
+                                      ]);
+                                    }}
+                                  >
+                                    <Plus size={12} />
+                                  </Button>
+                                </div>
+                              </div>
+                              <div className="space-y-1.5">
+                                <span className="text-[10px] text-gray-400 font-medium">
+                                  Columns
+                                </span>
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() => {
+                                      const c = Math.max(
+                                        1,
+                                        ((nodeData.columns as number) || 3) - 1,
+                                      );
+                                      const cellData =
+                                        (nodeData.cellData as string[][]) || [];
+                                      updateField("columns", c);
+                                      updateField(
+                                        "cellData",
+                                        cellData.map((row) => row.slice(0, c)),
+                                      );
+                                    }}
+                                  >
+                                    <Minus size={12} />
+                                  </Button>
+                                  <span className="text-xs font-mono w-8 text-center">
+                                    {(nodeData.columns as number) || 3}
+                                  </span>
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() => {
+                                      const c =
+                                        ((nodeData.columns as number) || 3) + 1;
+                                      const cellData =
+                                        (nodeData.cellData as string[][]) || [];
+                                      updateField("columns", c);
+                                      updateField(
+                                        "cellData",
+                                        cellData.map((row, ri) => [
+                                          ...row,
+                                          ri === 0
+                                            ? `Header ${c}`
+                                            : `Row ${ri} Col ${c}`,
+                                        ]),
+                                      );
+                                    }}
+                                  >
+                                    <Plus size={12} />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Header Background Color */}
+                            <div className="space-y-2">
+                              <span className="text-[10px] text-gray-400 font-medium">
+                                Header Background
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <div className="relative w-8 h-8 rounded-md border border-gray-200 overflow-hidden shrink-0">
+                                  <input
+                                    type="color"
+                                    value={
+                                      (nodeData.headerBgColor as string) ||
+                                      "#3b82f6"
+                                    }
+                                    onChange={(e) =>
+                                      updateField(
+                                        "headerBgColor",
+                                        e.target.value,
+                                      )
+                                    }
+                                    className="absolute inset-0 w-full h-full cursor-pointer"
+                                  />
+                                </div>
+                                <Input
+                                  value={
+                                    (nodeData.headerBgColor as string) ||
+                                    "#3b82f6"
+                                  }
+                                  onChange={(e) =>
+                                    updateField("headerBgColor", e.target.value)
+                                  }
+                                  className="h-8 text-xs font-mono flex-1"
+                                  placeholder="#3b82f6"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Border Color */}
+                            <div className="space-y-2">
+                              <span className="text-[10px] text-gray-400 font-medium">
+                                Border Color
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <div className="relative w-8 h-8 rounded-md border border-gray-200 overflow-hidden shrink-0">
+                                  <input
+                                    type="color"
+                                    value={
+                                      (nodeData.borderColor as string) ||
+                                      "#e5e7eb"
+                                    }
+                                    onChange={(e) =>
+                                      updateField("borderColor", e.target.value)
+                                    }
+                                    className="absolute inset-0 w-full h-full cursor-pointer"
+                                  />
+                                </div>
+                                <Input
+                                  value={
+                                    (nodeData.borderColor as string) ||
+                                    "#e5e7eb"
+                                  }
+                                  onChange={(e) =>
+                                    updateField("borderColor", e.target.value)
+                                  }
+                                  className="h-8 text-xs font-mono flex-1"
+                                  placeholder="#e5e7eb"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Border Width */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-[10px] text-gray-400 font-medium">
+                                  Border Width
+                                </span>
+                                <span className="text-[10px] text-gray-400">
+                                  {(nodeData.borderWidth as number) ?? 1}px
+                                </span>
+                              </div>
+                              <Slider
+                                value={[(nodeData.borderWidth as number) ?? 1]}
+                                onValueChange={([v]) =>
+                                  updateField("borderWidth", v)
+                                }
+                                min={0}
+                                max={5}
+                                step={1}
+                              />
+                            </div>
+
+                            {/* Font Color */}
+                            <div className="space-y-2">
+                              <span className="text-[10px] text-gray-400 font-medium">
+                                Font Color
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <div className="relative w-8 h-8 rounded-md border border-gray-200 overflow-hidden shrink-0">
+                                  <input
+                                    type="color"
+                                    value={
+                                      (nodeData.fontColor as string) ||
+                                      "#1f2937"
+                                    }
+                                    onChange={(e) =>
+                                      updateField("fontColor", e.target.value)
+                                    }
+                                    className="absolute inset-0 w-full h-full cursor-pointer"
+                                  />
+                                </div>
+                                <Input
+                                  value={
+                                    (nodeData.fontColor as string) || "#1f2937"
+                                  }
+                                  onChange={(e) =>
+                                    updateField("fontColor", e.target.value)
+                                  }
+                                  className="h-8 text-xs font-mono flex-1"
+                                  placeholder="#1f2937"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Font Size */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-[10px] text-gray-400 font-medium">
+                                  Font Size
+                                </span>
+                                <span className="text-[10px] text-gray-400">
+                                  {(nodeData.fontSize as number) || 13}px
+                                </span>
+                              </div>
+                              <Slider
+                                value={[(nodeData.fontSize as number) || 13]}
+                                onValueChange={([v]) =>
+                                  updateField("fontSize", v)
+                                }
+                                min={10}
+                                max={24}
+                                step={1}
+                              />
+                            </div>
+
+                            {/* Opacity */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-[10px] text-gray-400 font-medium">
+                                  Opacity
+                                </span>
+                                <span className="text-[10px] text-gray-400">
+                                  {(nodeData.opacity as number) ?? 100}%
+                                </span>
+                              </div>
+                              <Slider
+                                value={[(nodeData.opacity as number) ?? 100]}
+                                onValueChange={([v]) =>
+                                  updateField("opacity", v)
+                                }
+                                min={10}
+                                max={100}
+                                step={5}
+                              />
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
                   </Accordion>
                 )}
               </>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Thermometer, MoreHorizontal } from "lucide-react";
@@ -78,11 +78,6 @@ export function ClimateWidget({ id }: NodeProps) {
           ref={cardRef}
           className="w-56 p-5 shadow-lg border border-gray-100 bg-white"
         >
-          <Handle
-            type="target"
-            position={Position.Top}
-            className="w-3 h-3 bg-purple-500"
-          />
 
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -162,12 +157,6 @@ export function ClimateWidget({ id }: NodeProps) {
           <div className="text-xs text-gray-400 mt-2 text-center">
             ID: {id.slice(0, 8)}
           </div>
-
-          <Handle
-            type="source"
-            position={Position.Bottom}
-            className="w-3 h-3 bg-purple-500"
-          />
         </Card>
       </ContextMenuTrigger>
 

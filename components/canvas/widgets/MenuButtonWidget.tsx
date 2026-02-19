@@ -1,6 +1,6 @@
 "use client";
 import React, { memo, useState } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Menu, ChevronDown } from "lucide-react";
 
 const menuItems = ["Dashboard", "Settings", "Reports", "Logs"];
@@ -12,11 +12,6 @@ export const MenuButtonWidget = memo(function MenuButtonWidget({
   const [open, setOpen] = useState(false);
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 w-[170px] overflow-hidden">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-gray-500"
-      />
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-gray-50 transition-colors"
@@ -44,11 +39,6 @@ export const MenuButtonWidget = memo(function MenuButtonWidget({
           ))}
         </div>
       )}
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-gray-500"
-      />
     </div>
   );
 });

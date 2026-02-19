@@ -1,6 +1,6 @@
 "use client";
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Monitor, Cpu, MemoryStick, Wifi } from "lucide-react";
 
 export const DeviceMonitorWidget = memo(function DeviceMonitorWidget({
@@ -14,11 +14,6 @@ export const DeviceMonitorWidget = memo(function DeviceMonitorWidget({
   ];
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 w-[220px]">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-violet-500"
-      />
       <div className="flex items-center gap-2 mb-3">
         <Monitor size={14} className="text-violet-500" />
         <span className="text-xs font-semibold text-gray-800">
@@ -44,11 +39,6 @@ export const DeviceMonitorWidget = memo(function DeviceMonitorWidget({
           </div>
         ))}
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-violet-500"
-      />
     </div>
   );
 });

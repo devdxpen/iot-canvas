@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Card } from "@/components/ui/card";
 import { Activity, MoreHorizontal } from "lucide-react";
 import {
@@ -85,11 +85,6 @@ export function HealthWidget({ id }: NodeProps) {
           ref={cardRef}
           className="w-56 p-4 shadow-lg border border-gray-100 bg-white"
         >
-          <Handle
-            type="target"
-            position={Position.Top}
-            className="w-3 h-3 bg-blue-500"
-          />
 
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -144,12 +139,6 @@ export function HealthWidget({ id }: NodeProps) {
           <div className="text-xs text-gray-400 mt-3 text-center">
             ID: {id.slice(0, 8)}
           </div>
-
-          <Handle
-            type="source"
-            position={Position.Bottom}
-            className="w-3 h-3 bg-blue-500"
-          />
         </Card>
       </ContextMenuTrigger>
 

@@ -1,6 +1,6 @@
 "use client";
 import React, { memo, useState } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { ToggleLeft, ToggleRight } from "lucide-react";
 
 export const BitSwitchWidget = memo(function BitSwitchWidget({
@@ -12,11 +12,6 @@ export const BitSwitchWidget = memo(function BitSwitchWidget({
     <div
       className={`rounded-xl shadow-lg border-2 p-4 w-[160px] text-center transition-all ${isOn ? "bg-blue-50 border-blue-300" : "bg-white border-gray-200"}`}
     >
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-blue-500"
-      />
       <span className="text-[10px] text-gray-500 font-medium">
         {(d.label as string) || "Bit Switch"}
       </span>
@@ -35,11 +30,6 @@ export const BitSwitchWidget = memo(function BitSwitchWidget({
       >
         {isOn ? "ON (1)" : "OFF (0)"}
       </span>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-blue-500"
-      />
     </div>
   );
 });

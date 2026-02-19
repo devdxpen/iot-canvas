@@ -1,6 +1,6 @@
 "use client";
 import React, { memo, useState } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 
 const options = ["AUTO", "MANUAL", "OFF", "STANDBY"];
 
@@ -11,11 +11,6 @@ export const WordSwitchWidget = memo(function WordSwitchWidget({
   const [selected, setSelected] = useState(0);
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 w-[170px]">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-purple-500"
-      />
       <span className="text-[10px] text-gray-400 font-medium block mb-2">
         {(d.label as string) || "Word Switch"}
       </span>
@@ -30,11 +25,6 @@ export const WordSwitchWidget = memo(function WordSwitchWidget({
           </button>
         ))}
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-purple-500"
-      />
     </div>
   );
 });

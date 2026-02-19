@@ -1,6 +1,6 @@
 "use client";
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Combine, Thermometer, Droplets, Wind } from "lucide-react";
 
 export const CombinationWidget = memo(function CombinationWidget({
@@ -19,11 +19,6 @@ export const CombinationWidget = memo(function CombinationWidget({
   ];
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 w-[200px]">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-indigo-500"
-      />
       <div className="flex items-center gap-1.5 mb-2">
         <Combine size={12} className="text-indigo-500" />
         <span className="text-[10px] text-gray-500 font-medium">
@@ -46,11 +41,6 @@ export const CombinationWidget = memo(function CombinationWidget({
           </div>
         ))}
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-indigo-500"
-      />
     </div>
   );
 });

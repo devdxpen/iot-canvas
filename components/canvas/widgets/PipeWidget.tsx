@@ -1,17 +1,12 @@
 "use client";
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 
 export const PipeWidget = memo(function PipeWidget({ data }: NodeProps) {
   const d = data as Record<string, unknown>;
   const flow = (d.value as number) || 65;
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 w-[220px]">
-      <Handle
-        type="target"
-        position={Position.Left}
-        className="w-2.5 h-2.5 bg-cyan-500"
-      />
       <span className="text-[10px] text-gray-400 font-medium block mb-2">
         {(d.label as string) || "Pipe"}
       </span>
@@ -27,11 +22,6 @@ export const PipeWidget = memo(function PipeWidget({ data }: NodeProps) {
         <span>Flow: {flow}%</span>
         <span>Pressure: 2.4 bar</span>
       </div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        className="w-2.5 h-2.5 bg-cyan-500"
-      />
     </div>
   );
 });

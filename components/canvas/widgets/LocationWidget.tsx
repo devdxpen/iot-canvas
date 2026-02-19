@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Handle, Position, NodeProps, Node } from "@xyflow/react";
+import { NodeProps, Node } from "@xyflow/react";
 import { Card } from "@/components/ui/card";
 import { MapPin, Navigation, Trash2, Copy, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -36,12 +36,6 @@ export function LocationWidget({ data, id }: NodeProps) {
 
   return (
     <Card className="w-52 p-4 shadow-lg border-2 border-green-500 bg-white">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-3 h-3 bg-green-500"
-      />
-
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <MapPin className="text-green-600" size={20} />
@@ -107,12 +101,6 @@ export function LocationWidget({ data, id }: NodeProps) {
           Device: {id.slice(0, 8)}
         </div>
       </div>
-
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-3 h-3 bg-green-500"
-      />
     </Card>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { LayoutDashboard, TrendingUp, TrendingDown } from "lucide-react";
 
 const kpis = [
@@ -16,11 +16,6 @@ export const DashboardWidget = memo(function DashboardWidget({
   const d = data as Record<string, unknown>;
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 w-[260px]">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-indigo-500"
-      />
       <div className="flex items-center gap-2 mb-3">
         <LayoutDashboard size={14} className="text-indigo-500" />
         <span className="text-xs font-semibold text-gray-800">
@@ -49,11 +44,6 @@ export const DashboardWidget = memo(function DashboardWidget({
           </div>
         ))}
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-indigo-500"
-      />
     </div>
   );
 });

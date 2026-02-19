@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { CircleDot, Trash2, Copy } from "lucide-react";
@@ -18,11 +18,6 @@ export function RadioWidget({ data, id }: NodeProps) {
 
   return (
     <Card className="w-52 p-4 shadow-lg border-2 border-indigo-500 bg-white">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-3 h-3 bg-indigo-500"
-      />
 
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
@@ -67,12 +62,6 @@ export function RadioWidget({ data, id }: NodeProps) {
         </div>
         <div className="text-xs text-gray-400 mt-1">ID: {id.slice(0, 8)}</div>
       </div>
-
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-3 h-3 bg-indigo-500"
-      />
     </Card>
   );
 }

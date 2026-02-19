@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Handle, Position, NodeProps, Node } from "@xyflow/react";
+import { NodeProps, Node } from "@xyflow/react";
 import { Card } from "@/components/ui/card";
 import { Thermometer, Trash2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -53,12 +53,6 @@ export function TemperatureWidget({ data, id }: NodeProps) {
 
   return (
     <Card className="w-52 p-4 shadow-lg border-2 border-blue-500 bg-white">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-3 h-3 bg-blue-500"
-      />
-
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Thermometer className="text-red-500" size={20} />
@@ -109,12 +103,6 @@ export function TemperatureWidget({ data, id }: NodeProps) {
       <div className="mt-3 pt-3 border-t">
         <div className="text-xs text-gray-500">Sensor ID: {id.slice(0, 8)}</div>
       </div>
-
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-3 h-3 bg-blue-500"
-      />
     </Card>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Handle, Position, NodeProps, Node } from "@xyflow/react";
+import { NodeProps, Node } from "@xyflow/react";
 import { Card } from "@/components/ui/card";
 import { Bell, AlertTriangle, Trash2, Copy, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -83,8 +83,6 @@ export function AlarmWidget({ data, id }: NodeProps) {
 
   return (
     <Card className={cn("w-52 p-4 shadow-lg border-2 bg-white", config.border)}>
-      <Handle type="target" position={Position.Top} className="w-3 h-3" />
-
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <StatusIcon
@@ -146,8 +144,6 @@ export function AlarmWidget({ data, id }: NodeProps) {
           <span className="font-medium">{alertCount}</span>
         </div>
       </div>
-
-      <Handle type="source" position={Position.Bottom} className="w-3 h-3" />
     </Card>
   );
 }

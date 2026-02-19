@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Handle, Position, NodeProps, Node } from "@xyflow/react";
+import { NodeProps, Node } from "@xyflow/react";
 import { Card } from "@/components/ui/card";
 
 type WidgetData = {
@@ -17,11 +17,7 @@ export function CustomNode({ data, type }: NodeProps) {
   const widgetData = data as WidgetData;
   return (
     <Card className="p-4 shadow-md border-2 border-gray-300">
-      <Handle type="target" position={Position.Top} className="w-2 h-2" />
-
       <div className="text-sm font-medium">{widgetData.label || type}</div>
-
-      <Handle type="source" position={Position.Bottom} className="w-2 h-2" />
     </Card>
   );
 }

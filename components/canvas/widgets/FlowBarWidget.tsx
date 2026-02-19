@@ -1,6 +1,6 @@
 "use client";
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import { ArrowRight } from "lucide-react";
 
 export const FlowBarWidget = memo(function FlowBarWidget({ data }: NodeProps) {
@@ -13,11 +13,6 @@ export const FlowBarWidget = memo(function FlowBarWidget({ data }: NodeProps) {
   ];
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 w-[260px]">
-      <Handle
-        type="target"
-        position={Position.Left}
-        className="w-2.5 h-2.5 bg-emerald-500"
-      />
       <span className="text-[10px] text-gray-400 font-medium block mb-2">
         {(d.label as string) || "Flow Bar"}
       </span>
@@ -35,11 +30,6 @@ export const FlowBarWidget = memo(function FlowBarWidget({ data }: NodeProps) {
           </React.Fragment>
         ))}
       </div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        className="w-2.5 h-2.5 bg-emerald-500"
-      />
     </div>
   );
 });

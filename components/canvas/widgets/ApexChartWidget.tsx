@@ -1,7 +1,7 @@
 "use client";
 
 import React, { memo } from "react";
-import { Handle, Position, NodeProps } from "@xyflow/react";
+import { NodeProps } from "@xyflow/react";
 import dynamic from "next/dynamic";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
@@ -160,11 +160,6 @@ export const ApexChartWidget = memo(function ApexChartWidget({
 
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 w-[280px]">
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-2.5 h-2.5 bg-indigo-500"
-      />
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-semibold text-gray-700">{label}</span>
         <span className="text-[9px] bg-indigo-100 text-indigo-600 px-1.5 py-0.5 rounded-full font-medium">
@@ -180,11 +175,6 @@ export const ApexChartWidget = memo(function ApexChartWidget({
           width="100%"
         />
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-2.5 h-2.5 bg-indigo-500"
-      />
     </div>
   );
 });
